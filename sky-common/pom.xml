@@ -44,10 +44,11 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
-        <!--微信支付-->
+        <!--微信支付（已禁用：WeChatPayUtil 已改为空实现，如需恢复请取消注释）
         <dependency>
             <groupId>com.github.wechatpay-apiv3</groupId>
             <artifactId>wechatpay-apache-httpclient</artifactId>
         </dependency>
+        -->
     </dependencies>
 </project>
