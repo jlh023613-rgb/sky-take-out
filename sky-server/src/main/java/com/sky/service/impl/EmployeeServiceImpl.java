@@ -100,4 +100,30 @@ public class EmployeeServiceImpl implements EmployeeService {
         return pageResult;
     }
 
+    //修改员工状态
+    @Override
+    public void updateStatus(Integer status, Long id) {
+        //直接传进去也可以但是这种修改可能之后也会涉及所以最好封装一下实体类传过去
+        Employee employee = new Employee();
+        employee.setStatus(status);
+        employee.setId(id);
+        employeeMapper.update(employee);
+    }
+
+    //根据id查询员工回显
+    @Override
+    public Employee queryempl(Long id) {
+        Employee employee = employeeMapper.selectById(id);
+        return employee;
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
+    }
+
 }

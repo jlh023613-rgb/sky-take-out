@@ -24,4 +24,11 @@ public interface EmployeeMapper {
     void insert(Employee employee);
 
     Page<Employee> pagequery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    //写的是一个全的更新所有都可以用所以用到动态sql
+    void update(Employee employee);
+
+    //根据id查询员工回显
+    @Select("select * from employee where id = #{id}")
+    Employee selectById(Long id);
 }
