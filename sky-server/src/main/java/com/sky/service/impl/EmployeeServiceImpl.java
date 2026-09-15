@@ -78,12 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
         //设置状态默认正常
         employee.setStatus(StatusConstant.ENABLE);
-        //设置创建时间
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-        //BaseContext是用来操作当前线程id的，请求到jwt拦截器的时候会解析出来id那个时候已经设置好了所所以这里可以直接取出来
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+        //公共字段（createTime/updateTime/createUser/updateUser）由 AutoFillAspect 切面自动填充，无需手动赋值
         employeeMapper.insert(employee);
 
     }
