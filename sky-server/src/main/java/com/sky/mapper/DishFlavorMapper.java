@@ -19,4 +19,11 @@ public interface DishFlavorMapper {
 
     @Select("select * from dish_flavor where dish_id = #{id}")
     List<DishFlavor> getByDishId(Long id);
+
+    /**
+     * 根据菜品id集合批量查询口味
+     * @param dishIds
+     * @return
+     */
+    List<DishFlavor> getByDishIds(List<Long> dishIds);
 }

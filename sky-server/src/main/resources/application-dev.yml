@@ -3,6 +3,22 @@ sky:
     driver-class-name: com.mysql.cj.jdbc.Driver
     host: localhost
     port: 3306
-    database: sky
+    database: sky_take_out
     username: root
     password: 123456
+  alioss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    # OSS密钥不提交到仓库；需要上传图片功能时在本地填回真实值（勿提交）
+    access-key-id: <your-oss-access-key-id>
+    access-key-secret: <your-oss-access-key-secret>
+    bucket-name: java-ailhh
+  redis:
+    host: localhost
+    port: 6379
+    # 本地Redis未设置密码，密码配置会导致 ERR Client sent AUTH, but no password is set
+    # password: 123456
+    database: 10
+
+  wechat:
+    appid: wxad578bdf62385500
+    secret: 1bb080a579907534d2f56cf9292b5fae
