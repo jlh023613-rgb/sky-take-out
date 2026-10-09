@@ -1,0 +1,98 @@
+package com.sky.controller.user;
+
+import com.sky.dto.OrdersPaymentDTO;
+import com.sky.dto.OrdersSubmitDTO;
+import com.sky.result.PageResult;
+import com.sky.result.Result;
+import com.sky.service.OrderService;
+import com.sky.vo.OrderPaymentVO;
+import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RequestMapping("/user/order")
+@RestController("userOrderController")
+@Slf4j
+public class OrderController {
+
+    @Autowired
+    private OrderService orderService;
+
+    /**
+     * 用户下单
+     */
+    @PostMapping("/submit")
+    public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO){
+        log.info("用户下单：{}", ordersSubmitDTO);
+        OrderSubmitVO orderSubmitVO = orderService.submit(ordersSubmitDTO);
+        return Result.success(orderSubmitVO);
+    }
+
+    /**
+     * 订单支付（模拟支付：点击支付后订单直接支付成功，无需真实微信支付）
+     */
+    @PutMapping("/payment")
+    public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception {
+        log.info("订单支付：{}", ordersPaymentDTO);
+        OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
+        return Result.success(orderPaymentVO);
+    }
+
+    /**
+     * 历史订单查询
+     */
+    @GetMapping("/historyOrders")
+    public Result<PageResult> page(int page, int pageSize, Integer status) {
+        log.info("历史订单查询：page={},pageSize={},status={}", page, pageSize, status);
+        PageResult pageResult = orderService.pageQuery4User(page, pageSize, status);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 查询订单详情
+     */
+    @GetMapping("/orderDetail/{id}")
+    public Result<OrderVO> details(@PathVariable("id") Long id) {
+        log.info("查询订单详情：{}", id);
+        OrderVO orderVO = orderService.details(id);
+        return Result.success(orderVO);
+    }
+
+    /**
+     * 用户取消订单
+     */
+    @PutMapping("/cancel/{id}")
+    public Result cancel(@PathVariable("id") Long id) throws Exception {
+        log.info("用户取消订单：{}", id);
+        orderService.userCancelById(id);
+        return Result.success();
+    }
+
+    /**
+     * 再来一单
+     */
+    @PostMapping("/repetition/{id}")
+    public Result repetition(@PathVariable("id") Long id) {
+        log.info("再来一单：{}", id);
+        orderService.repetition(id);
+        return Result.success();
+    }
+
+    /**
+     * 客户催单
+     */
+    @GetMapping("/reminder/{id}")
+    public Result reminder(@PathVariable("id") Long id) {
+        log.info("客户催单：{}", id);
+        orderService.reminder(id);
+        return Result.success();
+    }
+}

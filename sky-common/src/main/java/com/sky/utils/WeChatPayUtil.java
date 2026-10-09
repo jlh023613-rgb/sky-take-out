@@ -1,17 +1,24 @@
 package com.sky.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 /**
- * 微信支付工具类
+ * 微信支付工具类（模拟支付版本）
  *
- * 注意：微信支付功能已注释，当前为空实现，不执行任何实际支付逻辑。
- * 如需恢复微信支付，请从版本控制历史中恢复原始实现，并启用 pom.xml 中的
- * wechatpay-apache-httpclient 依赖以及 WeChatProperties 配置。
+ * 当前为模拟支付实现，不调用微信支付真实接口：
+ * pay 方法直接返回一份"支付成功"的模拟预支付交易单参数，
+ * 由 OrderServiceImpl 在拿到结果后立即把订单置为已支付（更新数据库）。
+ * 这样在小程序点击"去支付"后订单直接支付成功，无需真实微信支付环境，
+ * 也无需手动修改数据库数据。
+ *
+ * 如需恢复真实微信支付，请恢复下方注释中的原始实现，
+ * 并启用 pom.xml 中的 wechatpay-apache-httpclient 依赖以及 WeChatProperties 相关配置。
  */
-//@Component  // 微信支付已禁用，不再作为 Spring 组件注册
+@Component
 public class WeChatPayUtil {
 
     // ===== 原微信支付相关配置与依赖（已注释）=====
@@ -112,16 +119,28 @@ public class WeChatPayUtil {
      */
 
     /**
-     * 小程序支付（空实现，不执行任何实际支付逻辑）。
+     * 小程序支付（模拟实现：模拟微信统一下单成功，直接返回调起支付所需的参数）。
+     * 真实支付逻辑见本类注释中的原始实现。
      *
      * @param orderNum    商户订单号
      * @param total       金额，单位 元
      * @param description 商品描述
      * @param openid      微信用户的openid
-     * @return 空的 JSONObject
+     * @return 模拟的支付参数 JSON（timeStamp、nonceStr、package、signType、paySign）
      */
     public JSONObject pay(String orderNum, BigDecimal total, String description, String openid) throws Exception {
-        // 微信支付功能已禁用，什么都不执行，直接返回空对象
+        // ===== 模拟支付：生成假的预支付交易单参数，不调用微信接口 =====
+        String timeStamp = String.valueOf(System.currentTimeMillis() / 1000);
+        String nonceStr = RandomStringUtils.randomNumeric(32);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("timeStamp", timeStamp);
+        jsonObject.put("nonceStr", nonceStr);
+        jsonObject.put("package", "prepay_id=mock");
+        jsonObject.put("signType", "RSA");
+        jsonObject.put("paySign", "mock");
+        return jsonObject;
+
         /*
         //统一下单，生成预支付交易单
         String bodyAsString = jsapi(orderNum, total, description, openid);
@@ -164,11 +183,11 @@ public class WeChatPayUtil {
         }
         return jsonObject;
         */
-        return new JSONObject();
     }
 
     /**
-     * 申请退款（空实现，不执行任何实际退款逻辑）。
+     * 申请退款（模拟实现，不执行任何实际退款逻辑）。
+     * 真实退款逻辑见本类注释中的原始实现。
      *
      * @param outTradeNo    商户订单号
      * @param outRefundNo   商户退款单号
@@ -177,7 +196,8 @@ public class WeChatPayUtil {
      * @return 空字符串
      */
     public String refund(String outTradeNo, String outRefundNo, BigDecimal refund, BigDecimal total) throws Exception {
-        // 微信退款功能已禁用，什么都不执行，直接返回空字符串
+        // ===== 模拟退款：不执行任何实际退款逻辑 =====
+        return "";
         /*
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("out_trade_no", outTradeNo);
@@ -198,6 +218,5 @@ public class WeChatPayUtil {
         //调用申请退款接口
         return post(REFUNDS, body);
         */
-        return "";
     }
 }
